@@ -1,4 +1,5 @@
 import { Job } from "../models/job.model.js";
+import { Application } from "../models/application.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
@@ -46,7 +47,7 @@ const getAllJobs = asyncHandler(async (req, res) => {
         ]
     }
 
-    const jobs = await Job.find({ query })
+    const jobs = await Job.find( query )
         .populate({ path: "company" })
         .sort({ createdAt: -1 })
 
@@ -86,6 +87,10 @@ const getAdminJobs = asyncHandler(async (req, res) => {
     if (!jobs || jobs.length === 0) {
         throw new ApiError(404, "No jobs found for this admin");
     }
+
+    return res.status(200).json(
+        new ApiResponse(200, jobs, "Admin jobs fetched successfully")
+    );
 })
 
 

@@ -14,7 +14,7 @@ router.route('/register').post(register);
 
 router.route('/login').post(login);
 
-router.route('/logout').post(verifyJwt, logout);
+router.route('/logout').get(verifyJwt, logout);
 
 router.route('/update-profile').post(verifyJwt, updateProfile);
 

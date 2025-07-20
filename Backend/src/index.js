@@ -6,6 +6,7 @@ import connectDB from './db/index.js';
 import authRoutes from './routes/auth.route.js';
 import companyRoutes from './routes/company.route.js';
 import jobRoutes from './routes/job.route.js';
+import applicationRoutes from './routes/application.route.js';
 const PORT = process.env.PORT || 3000;
 const app = express();
 
@@ -23,6 +24,7 @@ app.use(cookieParser())
 app.use('/api/v1/user', authRoutes);
 app.use('/api/v1/company', companyRoutes);
 app.use('/api/v1/job', jobRoutes);
+app.use('/api/v1/application', applicationRoutes);
 
 
 app.use((err, req, res, next) => {

@@ -5,7 +5,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 
 const registerCompany = asyncHandler ( async (req, res) => {
      const {name } = req.body;
-
+ 
      if ( ! name ) {
         throw new ApiError(404, "Company name is required here");
      }
@@ -96,7 +96,6 @@ const updateCompany = asyncHandler ( async (req, res) => {
      return res.status(200).json(
         new ApiResponse(200, company, "Company updated successfully")
      )
-
 
 })
 
