@@ -28,7 +28,8 @@ const userSchema = new mongoose.Schema({
 
     fullName: {
         type: String,
-        required: true,
+        required: false,
+        default: "",
     },
     email: {
         type: String,
@@ -41,7 +42,7 @@ const userSchema = new mongoose.Schema({
     },
     mobNo: {
         type: Number,
-        required: true,
+        required: false,
     },
     role: {
         type: String,

@@ -6,15 +6,11 @@ import jwt from "jsonwebtoken";
 
 
 const register = asyncHandler(async (req, res) => {
-  const { fullName, email, password, role, mobNo } = req.body
+  const { email, password, role, } = req.body
 
-  //  if ( ! fullName || !email || ! password || ! role || ! mobNo ) {
-  //   throw new ApiError(400, "All fields are required ");
-  //  }
-
-  if ([fullName, email, password, role, mobNo].some(field => typeof field !== "string" || field.trim() === "")) {
+  if ([email, password, role].some(field => typeof field !== "string" || field.trim() === "")) {
     throw new ApiError(400, "All fields are required");
-  }
+}
 
   const existedUser = await User.findOne({ email })
   if (existedUser) {
@@ -22,19 +18,10 @@ const register = asyncHandler(async (req, res) => {
   }
 
   const user = await User.create({
-    fullName,
     email,
     password,
-    mobNo,
     role,
-    profile: {
-    bio: "",
-    profilePic: "",
-    skills: [],
-    resume: "",
-    resumeOriginalName: "",
-    company: null
-  }
+    profile: {}
 
   });
 
@@ -75,11 +62,6 @@ const login = asyncHandler(async (req, res) => {
   if (!roles.includes(role) || role !== user.role) {
     throw new ApiError(403, "Invalid role provided");
   }
-
-  //  if ( role !== user.role ) {
-  //   throw new ApiError(400, "Role is not correct ");
-  //  }
-
 
   const tokenData = {
     _id: user._id,
