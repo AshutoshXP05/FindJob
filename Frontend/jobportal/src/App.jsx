@@ -1,21 +1,12 @@
-// import { useState } from 'react'
-// import reactLogo from './assets/react.svg'
-// import viteLogo from '/vite.svg'
-import './App.css'
-import { Button } from "@/components/ui/button"
+import "./App.css";
+import Navbar from "./shared/Navbar";
 
 function App() {
   return (
     <>
-
-    <div>
-      <h1 className='bg-red-900 font-bold text-shadow-amber-500'> Welcome </h1>
-    </div>
-        <div className="flex min-h-svh flex-col items-center justify-center">
-      <Button>Click me</Button>
-    </div>
+      <Navbar />
     </>
-  )
+  );
 }
- 
-export default App
+
+export default App;
