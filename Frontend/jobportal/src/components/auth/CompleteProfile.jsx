@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import Navbar from "../shared/Navbar";
 import { User, Upload } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { USER_API_END_POINT } from "../../lib/constants";
+import axios from "axios";
+import { toast } from "sonner";
 
 function CompleteProfile() {
   const navigate = useNavigate();
@@ -30,27 +33,43 @@ function CompleteProfile() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(form)
+
     if (!form.role) {
       alert("Please select your role.");
+      
       return;
     }
     setSubmitting(true);
 
+    try {
+
     const formData = new FormData();
+    formData.append("name", form.name);
     formData.append("role", form.role);
     formData.append("mobNo", form.mobNo);
     if (form.profilePic) formData.append("profilePic", form.profilePic);
     if (form.role === "employee" && form.resume) formData.append("resume", form.resume);
 
-    try {
+
       // ----- Your backend call here -----
       // Example: await axios.patch('/api/user/profile', formData, { ... });
 
       // Simulating profile update...
+      const res = await axios.post(`${USER_API_END_POINT}/complete-profile`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        },
+        withCredentials: true,
+      })
+      if ( res.data.success ) {
+        toast.success(res.data.message);
+        navigate("/login");
+      }
       setTimeout(() => {
         setSubmitting(false);
         navigate("/");
-      }, 120);
+      }, 1120);
     } catch (err) {
       setSubmitting(false);
       alert("There was a problem updating your profile.", err);
@@ -176,7 +195,7 @@ function CompleteProfile() {
                 </div>
               </div>
             )}
-
+ 
             <button
               type="submit"
               className="w-full bg-[#F83002] text-white py-2 rounded font-semibold hover:bg-[#cf2601] transition disabled:opacity-70"

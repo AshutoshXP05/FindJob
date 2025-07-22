@@ -16,7 +16,7 @@ const bioSchema = new mongoose.Schema({
         type: String
     },
     resumeOriginalName: {
-        type: String
+        type: String,
     },
     company: {
         type: mongoose.Schema.Types.ObjectId,
@@ -47,14 +47,11 @@ const userSchema = new mongoose.Schema({
     role: {
         type: String,
         enum: ["employee", "recruiter"],
-        required: true
     },
     profile: bioSchema,
 }, {
     timestamps: true,
 })
-
-
 
 
 userSchema.pre("save", async function(next) {

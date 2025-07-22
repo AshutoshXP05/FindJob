@@ -1,7 +1,10 @@
-import React, { useState } from 'react'
-import Navbar from '../shared/Navbar'
-import { UserPlus, Eye, EyeOff } from 'lucide-react'
-import { Link, useNavigate } from 'react-router-dom'
+import React, { useState } from "react";
+import Navbar from "../shared/Navbar";
+import { UserPlus, Eye, EyeOff } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { USER_API_END_POINT } from "../../lib/constants";
+import { toast } from "sonner";
+import axios from "axios";
 
 function SignUp() {
   const [form, setForm] = useState({
@@ -20,16 +23,33 @@ function SignUp() {
     });
   };
 
-  const handleSubmit = e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.agree) {
       alert("You must agree to our Terms and Privacy Policy.");
       return;
     }
-    // Send signup request...
-    // On successful signup:
-    navigate("/complete-profile"); // User goes to complete profile
+
+    try {
+
+      const res = await axios.post(`${USER_API_END_POINT}/register`, form, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      });
+      if (res.data.success) {
+        toast.success(res.data.message);
+        navigate("/complete-profile");
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(
+        error.response?.data?.message || "Signup failed. Please try again."
+      );
+    }
   };
+  // };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -46,7 +66,7 @@ function SignUp() {
           <form className="space-y-4" onSubmit={handleSubmit}>
             {/* Email */}
             <div>
-              <label className='block text-gray-700 mb-1' htmlFor="email">
+              <label className="block text-gray-700 mb-1" htmlFor="email">
                 Email
               </label>
               <input
@@ -58,12 +78,12 @@ function SignUp() {
                 value={form.email}
                 required
                 placeholder="Email"
-                className='w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-orange-400 transition'
+                className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-orange-400 transition"
               />
             </div>
             {/* Password with show/hide */}
             <div>
-              <label className='block text-gray-700 mb-1' htmlFor="password">
+              <label className="block text-gray-700 mb-1" htmlFor="password">
                 Password
               </label>
               <div className="relative">
@@ -76,12 +96,12 @@ function SignUp() {
                   value={form.password}
                   required
                   placeholder="Password"
-                  className='w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-orange-400 transition pr-10'
+                  className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-orange-400 transition pr-10"
                 />
                 <button
                   type="button"
                   aria-label={showPassword ? "Hide password" : "Show password"}
-                  onClick={() => setShowPassword(s => !s)}
+                  onClick={() => setShowPassword((s) => !s)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 focus:outline-none"
                 >
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
@@ -101,22 +121,39 @@ function SignUp() {
               />
               <label htmlFor="agree" className="text-gray-700 text-sm">
                 I agree to the{" "}
-                <a href="/terms" className="underline text-blue-600" target="_blank" rel="noopener noreferrer">Terms</a> and{" "}
-                <a href="/privacy" className="underline text-blue-600" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
+                <a
+                  href="/terms"
+                  className="underline text-blue-600"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Terms
+                </a>{" "}
+                and{" "}
+                <a
+                  href="/privacy"
+                  className="underline text-blue-600"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Privacy Policy
+                </a>
               </label>
             </div>
             {/* Submit */}
             <button
               type="submit"
-              className='w-full bg-[#F83002] text-white py-2 rounded font-semibold hover:bg-[#cf2601] transition'
+              className="w-full bg-[#F83002] text-white py-2 rounded font-semibold hover:bg-[#cf2601] transition"
             >
               Sign Up
             </button>
           </form>
-          <div className='mt-4 text-center'>
+          <div className="mt-4 text-center">
             <span className="text-gray-700 text-sm">
               Already have an account?{" "}
-              <Link to="/login" className="text-[#F83002] hover:underline">Login</Link>
+              <Link to="/login" className="text-[#F83002] hover:underline">
+                Login
+              </Link>
             </span>
           </div>
         </div>

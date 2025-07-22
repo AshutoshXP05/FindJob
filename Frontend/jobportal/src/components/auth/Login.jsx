@@ -1,9 +1,14 @@
 import React, { useState } from 'react'
 import Navbar from '../shared/Navbar'
-import { LogIn, Eye, EyeOff } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { LogIn, Eye, EyeOff, Truck } from 'lucide-react'
+import { Link, useNavigate } from 'react-router-dom'
+import { USER_API_END_POINT } from '../../lib/constants.js';
+import axios from 'axios';
+import { toast } from 'sonner';
 
 function Login() {
+  const navigate = useNavigate();
+
   const [form, setForm] = useState({
     email: "",
     password: "",
@@ -17,8 +22,24 @@ function Login() {
     })
   }
 
-  const handleSubmit = e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    try {
+      const res = await axios.post(`${USER_API_END_POINT}/login`, form, {
+        headers: {
+          "Content-Type":"application/json",
+        },
+        withCredentials: true,
+      })
+      if ( res.data.success ) {
+        navigate("/");
+        toast.success(res.data.message)
+      }
+    } catch (error) {
+       toast.error(error.response?.data?.message || "Login failed. Please try again.");
+    }
+
     console.log(form);
     // You can put login logic here
   }
