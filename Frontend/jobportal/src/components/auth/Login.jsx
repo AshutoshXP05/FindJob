@@ -5,15 +5,20 @@ import { Link, useNavigate } from 'react-router-dom'
 import { USER_API_END_POINT } from '../../lib/constants.js';
 import axios from 'axios';
 import { toast } from 'sonner';
+import { useDispatch, useSelector } from 'react-redux';
+import { setLoading } from '../../app/authSlice';
 
 function Login() {
   const navigate = useNavigate();
+
 
   const [form, setForm] = useState({
     email: "",
     password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
+    const {loading} = useSelector(state => state.auth);
+  const dispatch = useDispatch();
 
   const handleChange = e => {
     setForm({
@@ -26,6 +31,7 @@ function Login() {
     e.preventDefault();
 
     try {
+      dispatch(setLoading(true))
       const res = await axios.post(`${USER_API_END_POINT}/login`, form, {
         headers: {
           "Content-Type":"application/json",
@@ -39,13 +45,16 @@ function Login() {
     } catch (error) {
        toast.error(error.response?.data?.message || "Login failed. Please try again.");
     }
+    finally{
+      dispatch(setLoading(false));
+    }
 
     console.log(form);
     // You can put login logic here
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       <Navbar />
       <div className="flex justify-center">
         <div className="w-full max-w-sm bg-white shadow-md rounded-lg p-6 mt-16">
@@ -58,7 +67,7 @@ function Login() {
           </div>
           <form className="space-y-4" onSubmit={handleSubmit}>
             <div>
-              <label className='block text-gray-700 mb-1' htmlFor="email">
+              <label className=' text-gray-700 mb-1' htmlFor="email">
                 Email
               </label>
               <input
@@ -90,10 +99,18 @@ function Login() {
                   placeholder="Password"
                   className='w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-orange-400 transition pr-10'
                 />
+
+                { 
+                  loading && (
+                    <div className='absolute right-10 top-1/2 -translate-y-0.5 text-gray-400 text-sm select-none'> Loading ... </div>
+                  )
+                }
+               
                 <button
                   type="button"
                   onClick={() => setShowPassword(s => !s)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 focus:outline-none"
+                  tabIndex={-1}
                 >
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
@@ -102,11 +119,15 @@ function Login() {
             {/* Submit Button */}
             <button
               type="submit"
-              className='w-full bg-[#F83002] text-white py-2 rounded font-semibold hover:bg-[#cf2601] transition'
+              disabled={loading}
+              className={`w-full text-white py-2 rounded font-semibold transition ${
+                loading ? "bg-orange-300 cursor-not-allowed" : "bg-[#F83002] hover:bg-[#cf2601]"
+              }`}
             >
-              Login
+              {loading ? "Logging in..." : "Login"}
             </button>
           </form>
+
           <div className='mt-4 text-center'>
             <span className="text-gray-700 text-sm">
               Don't have an account?{" "}

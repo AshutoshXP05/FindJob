@@ -5,6 +5,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { USER_API_END_POINT } from "../../lib/constants";
 import { toast } from "sonner";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { setLoading } from "../../app/authSlice";
 
 function SignUp() {
   const [form, setForm] = useState({
@@ -14,6 +16,8 @@ function SignUp() {
   });
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const {loading } = useSelector(state => state.auth);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -31,7 +35,7 @@ function SignUp() {
     }
 
     try {
-
+      dispatch(setLoading(true));
       const res = await axios.post(`${USER_API_END_POINT}/register`, form, {
         headers: {
           "Content-Type": "application/json",
@@ -48,11 +52,14 @@ function SignUp() {
         error.response?.data?.message || "Signup failed. Please try again."
       );
     }
+    finally {
+      dispatch(setLoading(false));
+    }
   };
   // };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen ">
       <Navbar />
       <div className="flex justify-center">
         <div className="w-full max-w-sm bg-white shadow-md rounded-lg p-6 mt-16">
